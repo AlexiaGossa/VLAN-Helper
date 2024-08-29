@@ -1,0 +1,310 @@
+body {
+	background-color: #ddd;
+	
+}
+
+.ports {
+	border-width: 0;
+	/*box-shadow: 1px 1px 10px 0 #aaaaaa;*/
+	border-radius: 0.5em;
+	background-color: #fff;
+	margin: 0.5em;
+	padding: 0.5em;
+	position: relative;
+}
+
+.ports-id>label {
+	left: 2.5em;
+	position: relative;
+}
+
+.port1 .ports-id {
+	background-color: #dde;
+	padding: 0.5em;
+	border-radius: 0.5em;
+	font-weight: 700;
+    font-size: 125%;
+	margin-bottom: 1em;
+}
+
+.port2 .ports-id {
+	background-color: #cec;
+	padding: 0.5em;
+	border-radius: 0.5em;
+	font-weight: 700;
+    font-size: 125%;
+	margin-bottom: 1em;
+}
+
+
+label {
+	width: 15em;
+}
+
+.notes {
+	padding: 1em;
+    font-size: 80%;
+    /*height: 8em;*/
+    background-color: #fff0e0;
+    border-radius: 1em;
+    margin: 0.5em;
+	display: inline-block;
+}
+
+.test_ids_list {
+	border-width: 0;
+	border-radius: 0.5em;
+	background-color: #fff;
+	margin: 0.5em;
+	padding: 0.5em;
+	margin-top: 2em;
+}
+
+.test_ids_list .title {
+	background-color: #ffcb95;
+	padding: 0.5em;
+	border-radius: 0.5em;
+	font-weight: 700;
+    font-size: 125%;
+	margin-bottom: 1em;
+}
+
+input {
+	border: 2px #000 solid;
+}
+
+input.allowed,
+input.tag_allowed,
+input.untag_allowed,
+input.conflict_allowed ,
+input#id_list {
+	width: 40em;
+}
+
+.inputValid {
+	border-color: #0E0;
+	background-color: #E0FFE0;
+}
+
+.inputError {
+	border-color: #E00;
+	background-color: #FFE0E0;
+}
+
+.blockdisabled {
+	opacity: 0.5;
+	filter: blur(1px) grayscale(100%);
+	pointer-events: none;
+	user-select: none;
+	-webkit-touch-callout: none;
+}
+
+
+
+.result_matrix,
+.frame_simulator {
+	border-width: 0;
+	border-radius: 0.5em;
+	background-color: #fff;
+	margin: 0.5em;
+	padding: 0.5em;
+	margin-top: 2em;
+}
+
+.result_matrix .title,
+.frame_simulator .title {
+	background-color: #4aefe0;
+	padding: 0.5em;
+	border-radius: 0.5em;
+	font-weight: 700;
+    font-size: 125%;
+	margin-bottom: 1em;
+}
+
+.vlan_input {
+	width: 20em;
+}
+.vlan_output {
+	width: 40em;
+}
+	
+.matrix-cell {
+	display: inline-block;
+	width: 6em;
+	text-align: center;
+}
+
+.matrix-cell:first-child {
+	background-color: #fff;
+}
+
+.matrix-title {
+	background-color: #79c1e5 !important;
+    font-weight: 700;
+}
+
+.matrix-title-p2p1 {
+	background: linear-gradient(90deg, rgba(221,221,238,1) 0%, rgba(204,238,204,1) 100%) !important;
+}
+
+.matrix-title-p1p2 {
+	background: linear-gradient(90deg, rgba(204,238,204,1) 0%, rgba(221,221,238,1) 100%) !important;
+}
+
+
+.matrix-line {
+	display: block;
+	height: 3em;
+    line-height: 3em;
+}
+
+.matrix-line:first-child {
+	background-color: #fff;
+	
+}
+
+.matrix-table {
+	display: inline-block;
+	display: inline-block;
+    border-radius: 0.5em;
+    padding: 0.5em;
+    background-color: #eef;
+    margin: 0.5em;	
+}
+
+#vlan_matrix {
+	display: block;
+    margin: 0.5em;
+    padding: 0.5em;
+}
+
+.notes-container {
+	display: flex;
+}
+
+.point-help {
+	background-color: #d60;
+    display: inline-block;
+    width: 1.2em;
+    height: 1.2em;
+    border-radius: 1em;
+    line-height: calc(1.2em - 8px);
+    text-align: center;
+    border: 2px solid #000;
+    font-weight: 700;
+    color: #fff;
+    font-size: 175%;
+	position: absolute;
+	top: 0.7em;
+    left: 0.7em;	
+}
+
+.point-help:hover {
+	cursor: pointer;
+	background-color: #0ff;
+	color: #000;
+}
+
+.notes-disabled {
+	display: none;
+}
+
+.matrix-frames-behavior {
+	display: block;	
+}
+
+.matrix-frame-direction {
+	display: block;
+	font-weight: 700;
+    font-size: 120%;
+}
+
+.matrix-frame-direction>span {
+	font-size: 200%;
+}
+
+.matrix-tag-direction {
+	display: inline-block;
+    border-radius: 0.3em;
+    padding: 0.2em;
+	padding-left: 0.5em;
+	border-bottom: 2px solid #000;
+}
+
+.matrix-tag-direction:first-child {
+	width: 14em;
+	margin-right: 1em;
+	
+}
+
+.matrix-tag-direction:last-child {
+	width: 30em;
+	margin-left: 1em;
+}
+
+.matrix-frame {
+	display: block;
+    height: 2.5em;
+    line-height: 2em;
+	margin: 0.5em;
+}
+
+.matrix-frames {
+	display: block;
+	margin: 0 0 2em 0;
+}
+
+
+.matrix-input,
+.matrix-connector,
+.matrix-output {
+	display: inline-block;	
+}
+
+.matrix-input,
+.matrix-output {
+	border: 2px solid #000;
+	border-radius: 0.5em;
+	padding: 0 0.5em;
+}
+
+.colorport1 {
+	background-color: #dde;
+}
+
+.colorport2 {
+	background-color: #cec;
+}
+
+.matrix-input {
+	width: 15em;
+}
+
+.matrix-connector {
+	width: 4em;
+	text-align: center;
+	font-weight: 700;
+	font-size: 200%;
+}
+
+.matrix-connector:after {
+	content: ' \2192';
+}
+
+
+.matrix-output {
+	width: 30em;
+	text-align: center;
+
+}
+
+.matrix-table {
+	display: none;
+}
+
+.matrix-noframe {
+	opacity: 0.5;
+    border-style: dotted;
+    font-weight: 700;
+}
+

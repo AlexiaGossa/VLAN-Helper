@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>VLAN Analyzer</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate">
+        <meta http-equiv="expires" content="1" />
+        <meta http-equiv="pragma" content="no-cache">
+
+        <link href="bootstrap.min.css" rel="stylesheet">
+		<link href="vlan.css" rel="stylesheet">
+        <script src="jquery-3.3.1.min.js" type="text/javascript"></script>
+        <script src="bootstrap.min.js" type="text/javascript"></script>
+        <script src="vlan.js" type="text/javascript"></script>
+		<script src="vlan-switch.js" type="text/javascript"></script>
+    </head>
+
+    <body>
+		<div class="port1 ports" id="port1">
+		
+			<div class="ports-id">
+				<label class="title">Port 1</label>
+			</div>
+		
+			<div>
+				<label>Port Mode</label>
+				<select class="port_mode" onchange="selectPort( this )">
+					<option value="port_access" selected>Access port</option>
+					<option value="port_trunk">Trunk port</option>
+					<option value="port_uplink">Uplink port</option>
+					<option value="port_hybrid">Hybrid port</option>
+				</select>
+			</div>
+			
+			<div class="port_access port_type">
+				<div>
+					<label>Access VLAN</label>			
+					<input type="text" class="native inputError" placeholder="VLAN ID 1-4094" oninput="ids_checkSingleValueSimple(this)">
+				</div>
+				
+				<div class="notes-container">
+					<div class="point-help" onclick="notesChangeState(this)">
+						?
+					</div>
+					<div class="notes notes-disabled">
+						<div>
+							Notes :</br>
+							Access VLAN field is required.</br>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+			
+			<div class="port_trunk port_type" style="display: none;">
+				<div>
+					<label>Native VLAN</label>			
+					<input type="text" class="native inputError" placeholder="VLAN ID 1-4094" oninput="ids_checkSingleValueSimple(this)">
+				</div>
+				<div>
+					<label>Allowed VLAN</label>
+					<input type="text" class="allowed inputValid" placeholder="Multiple values" oninput="ids_checkMultipleValueAndEmptySimple(this)">
+				</div>
+
+				<div class="notes-container">
+					<div class="point-help" onclick="notesChangeState(this)">
+						?
+					</div>
+					<div class="notes notes-disabled">
+						Notes :</br>
+						Native VLAN field is required.</br>
+					</div>
+				</div>
+				
+			</div>
+			
+			<div class="port_uplink port_type" style="display: none;">
+				<div>
+					<label>Native VLAN</label>
+					<input type="text" class="native inputError" placeholder="VLAN ID 1-4094" oninput="ids_checkSingleValueSimple(this)">
+				</div>
+				<div>
+					<label>Allowed VLAN</label>
+					<input type="text" class="allowed inputValid" placeholder="Multiple values" oninput="ids_checkMultipleValueAndEmptySimple(this)">
+				</div>
+				
+				<div class="notes-container">
+					<div class="point-help" onclick="notesChangeState(this)">
+						?
+					</div>
+					<div class="notes notes-disabled">
+						Notes :</br>
+						Native VLAN field is required.</br>
+					</div>
+				</div>
+			</div>
+			
+
+			<div class="port_hybrid port_type" style="display: none;">
+				<div>
+					<label>Native VLAN</label>
+					<input type="text" class="native inputError" placeholder="VLAN ID 1-4094" oninput="ids_checkSingleValueHybrid(this)">
+				</div>
+				<div>
+					<label>Tag Allowed VLAN</label>
+					<input type="text" class="tag_allowed inputValid" placeholder="Multiple values" oninput="ids_checkMultipleValueAndEmptyHybrid(this)">
+				</div>
+				<div>
+					<label>UNTag Allowed VLAN</label>
+					<input type="text" class="untag_allowed inputValid" placeholder="Multiple values" oninput="ids_checkMultipleValueAndEmptyHybrid(this)">
+				</div>
+				
+				<div>
+					<label>TAG/UNTag ID conflict detection</label>
+					<input type="text" class="conflict_allowed inputValid" disabled="disabled" value="No conflict">
+				</div>
+				
+				<div class="notes-container">
+					<div class="point-help" onclick="notesChangeState(this)">
+						?
+					</div>
+					<div class="notes notes-disabled">
+						Notes :</br>
+						Native VLAN field is required and could not be used in Tag Allowed VLAN field.</br>
+						Multiple values could use comma(,) and minus(-) like (100-200,452,933)</br>
+						Fields Tag Allowed VLAN and UNTag Allowed VLAN are mutually exclusive.</br>
+					</div>
+				</div>
+			</div>
+			
+		</div>
+		
+		
+		<div class="port2 ports" id="port2">
+		</div>
+		
+		<div class="test_ids_list blockdisabled">
+			<div class="title">
+				802.1Q / VLAN check
+			</div>
+			<div>
+				<label>VLAN ID list</label>
+				<input type="text" id="id_list" placeholder="Multiple 'single' values from 0 to 4094" oninput="ids_doMatrix()">
+			</div>
+				<div class="notes">
+					Notes :</br>
+					Multiple 'single' values could only use comma(,) like (0,12,47,452,933)</br>
+					The symbol minus(-) is not allowed.<br/>
+				</div>
+			
+			<div onclick="ids_autoGenerate();" class="btn btn-primary">Auto-generate list</div> 
+			<div onclick="ids_clear();" class="btn btn-primary">Clear list</div>
+			<div onclick="$('.matrix-table').css('display','inline-block');" class="btn btn-primary">Show matrix</div>
+			
+			
+			
+			<div id="vlan_matrix">
+			</div>
+			
+		</div>
+		<!--
+		<div class="result_matrix blockdisabled">
+			<div class="title">
+				VLAN ID matrix result
+			</div>
+		</div>
+		-->
+		
+		<div class="frame_simulator blockdisabled">
+			<div class="title">
+				802.1Q frame behavior realtime checker
+			</div>
+			
+			<div>
+				<label>Direction</label>
+				<select class="direction" onchange="switchDoSimulation()">
+					<option value="p1p2" selected>Port 1 to Port 2</option>
+					<option value="p2p1">Port 2 to Port 1</option>
+				</select>
+			</div>
+
+			<div>
+				<div>
+					<label>Input frame with VLAN</label>
+					<input type="text" class="vlan_input" placeholder="VLAN ID 0-4094 or nothing" oninput="switchDoSimulation()">
+				</div>
+				
+				<div>
+					</br>
+				</div>
+				<div>
+					<label>Output frame</label>
+					<input type="text" class="vlan_output" disabled="disabled" value="No output">
+				</div>
+				
+			</div>
+			
+		</div>
+		
+		
+		
+		
+		<!--
+		
+		<div onclick="ids_doMatrix();" class="btn btn-primary">Generate matrix from check list</div> 
+		
+	
+
+        <div>
+            <label for="alpha_value">Atténuation d'un step</label>
+            <input type="text" id="alpha_value" name="alpha" placeholder="Valeur en dB, ex 1.5">
+        </div>
+
+        <div>
+            <label for="bitcount_value">Nombre de bits</label>
+            <input type="text" id="bitcount_value" name="bitcount" placeholder="1 à 8 bits">
+        </div>
+
+        <div>
+            <label for="Rsource_value">Valeur Rsource</label>
+            <input type="text" id="Rsource_value" name="Rsource" placeholder="Pro:1200,Home:10000">
+        </div>
+
+        <div>
+
+            <div onclick="doCalc();" class="btn btn-primary">Effectuer les calculs</div>
+
+        </div>
+
+
+        <div>
+            <div>Résultats</div>
+
+            <div id="results"></div>
+
+        </div>
+
+		-->
+
+    </body>
+
