@@ -6,7 +6,7 @@ I couldn't understand this implementation. So I started learning and experimenti
 This is the goal of this little project.
 For now it is based on the implementation of a FS switch (like CISCO). Eventually I think I will add other implementations like TP-Link, Netgear, D-Link...
 
-<h1>What's already working?</h1>
+<h1>EN - What's already working?</h1>
 
 The currently working port modes are:
 - "Access Port"
