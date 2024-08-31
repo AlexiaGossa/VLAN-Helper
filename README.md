@@ -17,6 +17,7 @@ The "Hybrid Port" mode is currently being implemented.
 
 To test, you can directly use the webapp here:
 <a href="https://alexiagossa.github.io/VLAN-Helper/">https://alexiagossa.github.io/VLAN-Helper/</a>
+
 Notice : It's an alpha version !
 
 <h1>FR - De l'aide pour les VLAN ?</h1>
@@ -38,5 +39,6 @@ Le mode "Hybrid Port" est actuellement en cours d'implémentation.
 
 Pour tester, vous pouvez directement utiliser la webapp ici :
 <a href="https://alexiagossa.github.io/VLAN-Helper/">https://alexiagossa.github.io/VLAN-Helper/</a>
+
 N.B. : C'est une version Alpha !
 
