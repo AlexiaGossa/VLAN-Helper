@@ -1,5 +1,5 @@
 <h1>EN - Warning</h1>
-I have just detected a processing problem in the packages.
+I have just detected a processing problem in the ethernet packets.
 While we find the solution and fix the problem, you must be very careful with the results of the webapp, there may be errors in some cases.
 You are warned, do not trust the webapp blindly.
 
@@ -26,7 +26,7 @@ To test, you can directly use the webapp here:
 Notice : It's an alpha version !
 
 <h1>FR - Attention</h1>
-Je viens de détecter un problème de traitement dans les paquets.
+Je viens de détecter un problème de traitement dans les paquets ethernet.
 Le temps de trouver la solution et de corriger le problème, vous devez faire très attention avec les résultats de la webapp, il peut y avoir des erreurs dans certains cas.
 Vous êtes prévenus, ne faites pas confiance aveuglément à la webapp.
 
