@@ -9,6 +9,18 @@
 #	nemelit.com
 #	FRANCE
 #
+#
+#	Don't forget to enable all interfaces promiscuous mode
+#	ip link set ens192f0 promisc on
+#	ip link set ens192f1 promisc on
+#
+#	Script needs
+#	sudo dnf install python3
+#	sudo dnf install python3-pip
+#	sudo dnf install tcpdump
+#	sudo dnf install libpcap
+#	pip3 install scapy
+#
  
 from scapy.all import *
 import threading
