@@ -1,3 +1,15 @@
+/*
+ * 	VLAN-Helper project
+ *	Copyright (c) 2024 Alexia Gossa <contact@nemelit.com>
+ *
+ * 	This file is released under GPL-3.0 license
+ *
+ *
+ * 	Alexia Gossa
+ * 	nemelit.com
+ * 	FRANCE
+ */
+
 window.onload = init;
 
 
@@ -344,12 +356,6 @@ function checkVLANIDS ( sValues, iMinValue = 1 )
 	return arrayValues;
 }
 
-function ids_autoGenerate()
-{
-	getDataIDs ();
-	
-}
-
 function ids_inputTextState ( obj, bError )
 {
 	$(obj).removeClass("inputError");
@@ -566,6 +572,7 @@ function ids_checkalldone ( )
 	}
 	else
 	{
+		ids_doMatrix ( );
 		switchDoSimulation ( );
 	}
 	

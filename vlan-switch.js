@@ -1,30 +1,48 @@
 /*
- * Copyright (c) 2020-2024 Alexia Gossa
+ * 	VLAN-Helper project
+ *	Copyright (c) 2024 Alexia Gossa <contact@nemelit.com>
  *
- * This file is a part of SDM3055XM.
- * This source code is closed.
+ * 	This file is released under GPL-3.0 license
  *
- * It is totaly forbidden to disclose any information from
- * the source code.
  *
- * By accessing this file (read, modify or write), you
- * accept the non-disclosure agreement (NDA) without any
- * limitation.
- *
- *     contact@nemelit.com
- *
- * Alexia Gossa
- * nemelit.com
- * FRANCE
+ * 	Alexia Gossa
+ * 	nemelit.com
+ * 	FRANCE
  */
  
  
-var ports_brickwall_prefilter_LUT 	= new Array ( );
-var ports_translation_filter_LUT   	= new Array ( );
-var ports_detranslation_filter_LUT  = new Array ( );
-var ports_brickwall_postfilter_LUT 	= new Array ( );
+var ports_input_allow_filter_LUT 	= new Array ( );
+var ports_input_translation_LUT 	= new Array ( );
 
+var ports_output_allow_filter_LUT 	= new Array ( );
+var ports_output_translation_LUT = new Array ( );
 
+/*
+
+	Switch behavior
+	
+	
+		Input processing pipeline
+		
+			1.Input port 
+				\/
+			2.Translation
+				\/
+			3.Brickwall "Allow filter"
+				\/
+			4.Internal switch bus
+		
+		
+		Output processing pipeline
+		
+			1.Internal switch bus 
+				\/
+			2.Brickwall "Allow filter"
+				\/
+			3.Translation 
+				\/
+			4.Output port
+*/
 
 /*
  *
@@ -42,17 +60,17 @@ function switch_InitializePort ( iPortNumber )
 	switch ( iPortNumber)
 	{
 		case 1:
-			ports_translation_filter_LUT[0] 	= switch_CreatePortFilterTranslation ( );
-			ports_detranslation_filter_LUT[0] 	= switch_CreatePortFilterTranslation ( );
-			ports_brickwall_prefilter_LUT[0] 	= switch_CreatePortFilterBrickwall ( );
-			ports_brickwall_postfilter_LUT[0] 	= switch_CreatePortFilterBrickwall ( );
+			ports_input_translation_LUT[0] 		= switch_CreatePortFilterTranslation ( );
+			ports_output_translation_LUT[0] 	= switch_CreatePortFilterTranslation ( );
+			ports_input_allow_filter_LUT[0] 	= switch_CreatePortFilterBrickwall ( );
+			ports_output_allow_filter_LUT[0] 	= switch_CreatePortFilterBrickwall ( );
 			break;
 			
 		case 2:
-			ports_translation_filter_LUT[1] 	= switch_CreatePortFilterTranslation ( );
-			ports_detranslation_filter_LUT[1] 	= switch_CreatePortFilterTranslation ( );
-			ports_brickwall_prefilter_LUT[1] 	= switch_CreatePortFilterBrickwall ( );
-			ports_brickwall_postfilter_LUT[1] 	= switch_CreatePortFilterBrickwall ( );
+			ports_input_translation_LUT[1] 		= switch_CreatePortFilterTranslation ( );
+			ports_output_translation_LUT[1] 	= switch_CreatePortFilterTranslation ( );
+			ports_input_allow_filter_LUT[1] 	= switch_CreatePortFilterBrickwall ( );
+			ports_output_allow_filter_LUT[1] 	= switch_CreatePortFilterBrickwall ( );
 			break;
 	}
 }
@@ -70,36 +88,25 @@ function switch_AccessPort ( iPortNumber, iNativeVLAN )
 	switch_InitializePort ( iPortNumber );
 	iPortItem = iPortNumber - 1;
 	
-	/*
-	 *	Brickwall pre-filter
-	 */
+	//Input behavior
+	ports_input_translation_LUT[iPortItem][0] 				= iNativeVLAN;
+	ports_input_allow_filter_LUT[iPortItem][iNativeVLAN] 	= 1;
 	
-	//Enable pre-filter not-tagged frames
-	ports_brickwall_prefilter_LUT[iPortItem][0] = 1;
-	
-	//Enable pre-filter tagged frames
-	ports_brickwall_prefilter_LUT[iPortItem][iNativeVLAN] = 1;
-	
-	/*
-	 *	Translation filter
-	 */
-	
-	//Translate non-tagged frames to iNativeVLAN
-	ports_translation_filter_LUT[iPortItem][0] = iNativeVLAN;
-	
-	//De-translate
-	ports_detranslation_filter_LUT[iPortItem][iNativeVLAN] = 0;
-	
-	/*
-	 *	Brickwall post-filter
-	 */
-	
-	//Enable post-filter tagged frames
-	ports_brickwall_postfilter_LUT[iPortItem][iNativeVLAN] = 1;
+	//Output behavior
+	ports_output_allow_filter_LUT[iPortItem][iNativeVLAN] 	= 1;
+	ports_output_translation_LUT[iPortItem][iNativeVLAN] 	= 0;
 }
 
+/*
+ *	Trunk port
+ *	Set port 1 or port 2
+ *
+ *	iNative VLAN from 1 to 4094
+ *	arrayValueTag could be null (eq 1-4094) or multiple values
+ */
 function switch_TrunkPort ( iPortNumber, iNativeVLAN, arrayValueTag )
 {
+	var iIndex;
 	var iPortItem;
 	var arrayStateID;
 	
@@ -108,44 +115,51 @@ function switch_TrunkPort ( iPortNumber, iNativeVLAN, arrayValueTag )
 	
 	arrayStateID = ids_arrayIDStoTableState ( arrayValueTag );
 	
-	/*
-	 *	Brickwall pre-filter
-	 */
+	//Input behavior
+	ports_input_translation_LUT[iPortItem][0] 				= iNativeVLAN;
 	
-	//Enable pre-filter not-tagged frames
-	ports_brickwall_prefilter_LUT[iPortItem][0] = 1;
+	//Output behavior
+	ports_output_translation_LUT[iPortItem][iNativeVLAN] 	= 0;
 	
-	//Enable pre-filter tagged frames
-	for (iIndex=0;iIndex<=4094;iIndex++)
+	
+	//Allowed VLAN in Trunk mode
+	if (arrayValueTag==null)
 	{
-		if (arrayStateID[iIndex]==1)
-			ports_brickwall_prefilter_LUT[iPortItem][iIndex] = 1;
+		//Default behavior
+		for (iIndex=1;iIndex<=4094;iIndex++)
+		{
+			ports_input_allow_filter_LUT[iPortItem][iIndex] = 1;
+			ports_output_allow_filter_LUT[iPortItem][iIndex] = 1;
+		}
 	}
-	
-	/*
-	 *	Translation filter
-	 */
-	 
-	//Translate non-tagged frames to iNativeVLAN
-	ports_translation_filter_LUT[iPortItem][0] = iNativeVLAN;
-	
-	//De-translate
-	ports_detranslation_filter_LUT[iPortItem][iNativeVLAN] = 0;
-	
-	/*
-	 *	Brickwall post-filter
-	 */
-	
-	//Enable post-filter tagged frames
-	for (iIndex=0;iIndex<=4094;iIndex++)
+	else
 	{
-		if (arrayStateID[iIndex]==1)
-			ports_brickwall_postfilter_LUT[iPortItem][iIndex] = 1;
+		for (iIndex=1;iIndex<=4094;iIndex++)
+		{
+			if (arrayStateID[iIndex]==1)
+			{
+				ports_input_allow_filter_LUT[iPortItem][iIndex] = 1;
+				ports_output_allow_filter_LUT[iPortItem][iIndex] = 1;
+			}
+			else
+			{
+				ports_input_allow_filter_LUT[iPortItem][iIndex] = 0;
+				ports_output_allow_filter_LUT[iPortItem][iIndex] = 0;
+			}
+		}
 	}
 }
 
+/*
+ *	Uplink port
+ *	Set port 1 or port 2
+ *
+ *	iNative VLAN from 1 to 4094
+ *	arrayValueTag could be null (eq 1-4094) or multiple values
+ */
 function switch_UplinkPort ( iPortNumber, iNativeVLAN, arrayValueTag )
 {
+	var iIndex;
 	var iPortItem;
 	var arrayStateID;
 	
@@ -154,47 +168,52 @@ function switch_UplinkPort ( iPortNumber, iNativeVLAN, arrayValueTag )
 	
 	arrayStateID = ids_arrayIDStoTableState ( arrayValueTag );
 	
-	/*
-	 *	Brickwall pre-filter
-	 */
+	//Input behavior
+	ports_input_translation_LUT[iPortItem][0] 				= iNativeVLAN;
 	
-	//Enable pre-filter not-tagged frames
-	ports_brickwall_prefilter_LUT[iPortItem][0] = 1;
+	//Output behavior
+	//...Nothing to do with translation
 	
-	ports_brickwall_prefilter_LUT[iPortItem][iNativeVLAN] = 1;
 	
-	//Enable pre-filter tagged frames
-	for (iIndex=0;iIndex<=4094;iIndex++)
+	//Allowed VLAN in Uplink mode
+	if (arrayValueTag==null)
 	{
-		if (arrayStateID[iIndex]==1)
-			ports_brickwall_prefilter_LUT[iPortItem][iIndex] = 1;
+		//Default behavior
+		for (iIndex=1;iIndex<=4094;iIndex++)
+		{
+			ports_input_allow_filter_LUT[iPortItem][iIndex] = 1;
+			ports_output_allow_filter_LUT[iPortItem][iIndex] = 1;
+		}
 	}
-	
-	/*
-	 *	Translation filter
-	 */
-	 
-	//Translate non-tagged frames to iNativeVLAN
-	ports_translation_filter_LUT[iPortItem][0] = iNativeVLAN;
-	
-	//De-translate
-	ports_detranslation_filter_LUT[iPortItem][iNativeVLAN] = 0;
-	
-	/*
-	 *	Brickwall post-filter
-	 */
-	
-	//Enable post-filter tagged frames
-	for (iIndex=0;iIndex<=4094;iIndex++)
+	else
 	{
-		if (arrayStateID[iIndex]==1)
-			ports_brickwall_postfilter_LUT[iPortItem][iIndex] = 1;
+		for (iIndex=1;iIndex<=4094;iIndex++)
+		{
+			if (arrayStateID[iIndex]==1)
+			{
+				ports_input_allow_filter_LUT[iPortItem][iIndex] = 1;
+				ports_output_allow_filter_LUT[iPortItem][iIndex] = 1;
+			}
+			else
+			{
+				ports_input_allow_filter_LUT[iPortItem][iIndex] = 0;
+				ports_output_allow_filter_LUT[iPortItem][iIndex] = 0;
+			}
+		}
 	}
 }
 
-
+/*
+ *	Hybrid port
+ *	Set port 1 or port 2
+ *
+ *	iNative VLAN from 1 to 4094
+ *	arrayValueTag could be null (eq 1-4094) or multiple values
+ *	arrayValueUNTag could be null (eq 1-4094) or multiple values
+ */
 function switch_HybridPort ( iPortNumber, iNativeVLAN, arrayValueTag, arrayValueUNTag )
 {
+	var iIndex;
 	var iPortItem;
 	var arrayStateTagID;
 	var arrayStateUNTagID;
@@ -205,43 +224,55 @@ function switch_HybridPort ( iPortNumber, iNativeVLAN, arrayValueTag, arrayValue
 	arrayStateTagID 	= ids_arrayIDStoTableState ( arrayValueTag );
 	arrayStateUNTagID 	= ids_arrayIDStoTableState ( arrayValueUNTag );
 	
-	/*
-	 *	Brickwall pre-filter
-	 */
-	
-	//Enable pre-filter not-tagged frames
-	ports_brickwall_prefilter_LUT[iPortItem][0] = 1;
-	
-	ports_brickwall_prefilter_LUT[iPortItem][iNativeVLAN] = 1;
-	
-	//Enable pre-filter tagged frames
-	for (iIndex=0;iIndex<=4094;iIndex++)
+	//Default values
+	if (arrayValueUNTag==null)
 	{
-		if (arrayStateTagID[iIndex]==1)
-			ports_brickwall_prefilter_LUT[iPortItem][iIndex] = 1;
+		for (iIndex=1;iIndex<=4094;iIndex++)
+		{
+			arrayStateUNTagID[iIndex] = 0;
+		}
+		arrayStateUNTagID[iNativeVLAN] = 1;
 	}
-	
-	/*
-	 *	Translation filter
-	 */
-	 
-	//Translate non-tagged frames to iNativeVLAN
-	ports_translation_filter_LUT[iPortItem][0] = iNativeVLAN;
-	
-	//De-translate
-	ports_detranslation_filter_LUT[iPortItem][iNativeVLAN] = 0;
-	
-	/*
-	 *	Brickwall post-filter
-	 */
-	
-	//Enable post-filter tagged frames
-	for (iIndex=0;iIndex<=4094;iIndex++)
+	if (arrayValueTag==null)
 	{
-		if (arrayStateTagID[iIndex]==1)
-			ports_brickwall_postfilter_LUT[iPortItem][iIndex] = 1;
+		for (iIndex=1;iIndex<=4094;iIndex++)
+		{
+			if (arrayStateUNTagID[iIndex]==0)
+				arrayStateTagID[iIndex] = 1;
+			else
+				arrayStateTagID[iIndex] = 0;
+		}
+		
 	}
+
+	//Input behavior (translate)
+	ports_input_translation_LUT[iPortItem][0] 				= iNativeVLAN;
 	
+	//Output behavior (translate)
+	ports_output_translation_LUT[iPortItem][iNativeVLAN] 	= 0;
+	for (iIndex=1;iIndex<=4094;iIndex++)
+	{
+		if (arrayStateUNTagID[iIndex]==1)
+		{
+			ports_output_translation_LUT[iPortItem][iIndex] = 0
+		}
+	}
+
+	//Allowed VLAN
+	for (iIndex=1;iIndex<=4094;iIndex++)
+	{
+		if ( (arrayStateTagID[iIndex]==1) || (arrayStateUNTagID[iIndex]==1) )
+		{
+			ports_input_allow_filter_LUT[iPortItem][iIndex] = 1;
+			ports_output_allow_filter_LUT[iPortItem][iIndex] = 1;
+		}
+		else
+		{
+			ports_input_allow_filter_LUT[iPortItem][iIndex] = 0;
+			ports_output_allow_filter_LUT[iPortItem][iIndex] = 0;
+			
+		}
+	}
 	
 }
 
@@ -254,64 +285,68 @@ function switch_HybridPort ( iPortNumber, iNativeVLAN, arrayValueTag, arrayValue
  */
 function switch_ProceedFrameIO ( iPortNumberInput, iPortNumberOutput, iInputFrameVLANID )
 {
-	var iInputID;
-	var iOutputID;
+	var iInputVLAN_ID;
+	var iOutputVLAN_ID;
 	var iFrameID;
 	var iPortItemInput;
 	var iPortItemOutput;
 	
-	iInputID 	= 0;		//Default : no VLAN ID
-	iOutputID 	= null; 	//Default : No output
+	/*
+	 *	Prepare VLAN ID input to output
+	 */
+	iInputVLAN_ID 	= 0;		//Default : no VLAN ID
+	iOutputVLAN_ID 	= null; 	//Default : No output
 	if ( (iInputFrameVLANID>=1) && (iInputFrameVLANID<4095) )
-		iInputID = iInputFrameVLANID;
+		iInputVLAN_ID = iInputFrameVLANID;
 	
+	/*
+	 *	Input and output ports
+	 */
 	iPortItemInput 	= iPortNumberInput - 1;
 	iPortItemOutput = iPortNumberOutput - 1;
 	
 	/*
 	 *
-	 *	Port input...
-	 *
+	 *	Input processing
+	 *		Step 1 - Translation (from untagged to tagged)
+	 *		Step 2 - Brickwall "allow filter"
 	 */
+	 
+	//Step 1 - Translation
+	iFrameID = ports_input_translation_LUT[iPortItemInput][iInputVLAN_ID];
 	
-	//Input Brickwall pre-filter
-	if (ports_brickwall_prefilter_LUT[iPortItemInput][iInputID] == 0)
+	//Step 2 - Brickwall
+	if (ports_input_allow_filter_LUT[iPortItemInput][iFrameID] == 0)
 		return null;
 	
-	//Input translation filter
-	iFrameID = ports_translation_filter_LUT[iPortItemInput][iInputID];
-	
-	//Input Brickwall post-filter
-	if (ports_brickwall_postfilter_LUT[iPortItemInput][iFrameID] == 0)
-		return null;
-	
+
 	/*
 	 *
-	 *	internal switch routing
+	 *	internal switch processing
 	 *
 	 */
 	 
-	iOutputID = iFrameID;
-	
+	// Frame is now inside the switch and will be send to output...
+	// Nothing to do...
+	 
+
 	
 	/*
 	 *
-	 *	Port output...
+	 *	Output processing
+	 *		Step 1 - Brickwall "allow filter"
+	 *		Step 2 - Translation (from tagged to untagged)
 	 *
 	 */
-	
-	//Output Brickwall post-filter
-	if (ports_brickwall_postfilter_LUT[iPortItemOutput][iOutputID] == 0)
+	 
+	//Step 1 - Brickwall
+	if (ports_output_allow_filter_LUT[iPortItemOutput][iFrameID] == 0)
 		return null;
 	
-	//Output translation filter, do de-translation
-	iOutputID = ports_detranslation_filter_LUT[iPortItemOutput][iOutputID];
+	//Step 2 - Translation
+	iOutputVLAN_ID = ports_output_translation_LUT[iPortItemOutput][iFrameID];
 	
-	//Output Brickwall post-filter
-	if (ports_brickwall_prefilter_LUT[iPortItemOutput][iOutputID] == 0)
-		return null;
-	
-	return iOutputID;
+	return iOutputVLAN_ID;
 }
 
  

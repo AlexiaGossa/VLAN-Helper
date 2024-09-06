@@ -1,7 +1,21 @@
+/*
+ * 	VLAN-Helper project
+ *	Copyright (c) 2024 Alexia Gossa <contact@nemelit.com>
+ *
+ * 	This file is released under GPL-3.0 license
+ *
+ *
+ * 	Alexia Gossa
+ * 	nemelit.com
+ * 	FRANCE
+ */
+
 body {
 	background-color: #ddd;
 	
 }
+
+
 
 .body-title {
 	border-radius: 0.5em;
@@ -12,6 +26,27 @@ body {
 	background-color: #d00;
     color: #fff;
 	border: 0.3em solid #fff;
+}
+
+.body-title>a {
+	padding: 0.2em 0.4em 0.2em 0.4em;
+	margin-left: 0.5em;
+	background-color: #FDC;
+	border-radius: 0.3em;
+	border: 0.2em solid #AAA;
+	font-weight:700;
+	text-decoration: none;
+}
+
+.body-title>a:link,
+.body-title>a:visited {
+	color: #000;
+}
+
+.body-title>a:hover {
+	background-color: #0CF;
+	border-color: #666;
+	color: #fff;
 }
 
 .body-title>label {

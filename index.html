@@ -1,8 +1,21 @@
 <!DOCTYPE html>
+<!--
+/*
+ * 	VLAN-Helper project
+ *	Copyright (c) 2024 Alexia Gossa <contact@nemelit.com>
+ *
+ * 	This file is released under GPL-3.0 license
+ *
+ *
+ * 	Alexia Gossa
+ * 	nemelit.com
+ * 	FRANCE
+ */
+-->
 <html>
     <head>
         <meta charset="utf-8">
-        <title>VLAN Analyzer</title>
+        <title>VLAN Helper</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
         <meta http-equiv="cache-control" content="no-cache, no-store, must-revalidate">
         <meta http-equiv="expires" content="1" />
@@ -21,6 +34,7 @@
 			<label>
 				Rules checker of the 802.1Q / VLAN of FS switchs (CISCO-like)
 			</label>
+			<br>Project under GPL-3.0 license <a href="https://github.com/AlexiaGossa/VLAN-Helper">More info on GitHub</a>
 		</div>
 	
 		<div class="port1 ports" id="port1">
@@ -155,6 +169,7 @@
 					The symbol minus(-) is not allowed.<br/>
 				</div>
 			
+			<div onclick="ids_doMatrix();" class="btn btn-primary">Refresh</div> 
 			<div onclick="ids_autoGenerate();" class="btn btn-primary">Auto-generate list</div> 
 			<div onclick="ids_clear();" class="btn btn-primary">Clear list</div>
 			<div onclick="$('.matrix-table').css('display','inline-block');" class="btn btn-primary">Show matrix</div>
