@@ -13,17 +13,16 @@ For now it is based on the implementation of a FS switch (like CISCO). Eventuall
 
 <h1>EN - What's already working?</h1>
 
-The currently working port modes are:
+All port modes are currently functionnal :
 - "Access Port"
 - "Trunk Port"
 - "Uplink Port"
-
-The "Hybrid Port" mode is currently being implemented.
+- "Hybrid Port"
 
 To test, you can directly use the webapp here:
 <a href="https://alexiagossa.github.io/VLAN-Helper/">https://alexiagossa.github.io/VLAN-Helper/</a>
 
-Notice : It's an alpha version !
+Notice : Despite extensive testing, errors could still remain !
 
 <h1>FR - Attention</h1>
 Je viens de détecter un problème de traitement dans les paquets ethernet.
@@ -41,15 +40,14 @@ Pour le moment il est basé sur l'implémentation d'un switch FS (comme les CISC
 
 <h1>FR - Ce qui fonctionne déjà ?</h1>
 
-Les modes des ports actuellement fonctionnels sont :
+Tous les modes des ports sont actuellement fonctionnels :
 - "Access Port"
 - "Trunk Port"
 - "Uplink Port"
-
-Le mode "Hybrid Port" est actuellement en cours d'implémentation.
+- "Hybrid Port"
 
 Pour tester, vous pouvez directement utiliser la webapp ici :
 <a href="https://alexiagossa.github.io/VLAN-Helper/">https://alexiagossa.github.io/VLAN-Helper/</a>
 
-N.B. : C'est une version Alpha !
+N.B. : En dépit de nombreux tests, des erreurs peuvent encore subsistées !
 
