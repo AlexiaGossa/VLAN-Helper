@@ -291,6 +291,15 @@ function switch_ProceedFrameIO ( iPortNumberInput, iPortNumberOutput, iInputFram
 	var iPortItemInput;
 	var iPortItemOutput;
 	
+	//Return default object
+	var objResult = {
+		iResult: 			null,
+		iInternalVLANID: 	null,
+		bInputBlocked:		false,
+		bOutputBlocked:		false
+	};
+	
+	
 	/*
 	 *	Prepare VLAN ID input to output
 	 */
@@ -317,7 +326,10 @@ function switch_ProceedFrameIO ( iPortNumberInput, iPortNumberOutput, iInputFram
 	
 	//Step 2 - Brickwall
 	if (ports_input_allow_filter_LUT[iPortItemInput][iFrameID] == 0)
-		return null;
+	{
+		objResult.bInputBlocked	= true;
+		return objResult;
+	}
 	
 
 	/*
@@ -328,7 +340,8 @@ function switch_ProceedFrameIO ( iPortNumberInput, iPortNumberOutput, iInputFram
 	 
 	// Frame is now inside the switch and will be send to output...
 	// Nothing to do...
-	 
+	
+	objResult.iInternalVLANID = iFrameID; 
 
 	
 	/*
@@ -341,12 +354,17 @@ function switch_ProceedFrameIO ( iPortNumberInput, iPortNumberOutput, iInputFram
 	 
 	//Step 1 - Brickwall
 	if (ports_output_allow_filter_LUT[iPortItemOutput][iFrameID] == 0)
-		return null;
+	{
+		objResult.bOutputBlocked = true;
+		return objResult;
+	}
 	
 	//Step 2 - Translation
 	iOutputVLAN_ID = ports_output_translation_LUT[iPortItemOutput][iFrameID];
 	
-	return iOutputVLAN_ID;
+	
+	objResult.iResult = iOutputVLAN_ID;
+	return objResult;
 }
 
  

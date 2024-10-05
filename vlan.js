@@ -388,6 +388,7 @@ function ids_checkMultipleValueAndEmpty ( obj )
 	
 	bError = true;
 	sValue = sValue.trim();
+	sValue = sValue.replaceAll( " ", "" );
 	
 	if (sValue.length==0)
 	{
@@ -648,6 +649,8 @@ function ids_doMatrix ( )
 	var sDirectionA, sDirectionB;
 	var iDirectionA, iDirectionB;
 	var sClassAdd;
+	var objResult;
+	var sInternal;
 	
 	sOutput = "";
 	iLength = arrayCheckVLAN.length;
@@ -698,7 +701,9 @@ function ids_doMatrix ( )
 				iPortVLANB = arrayCheckVLAN[iPortB];
 				
 				//Do check
-				iResult = switch_ProceedFrameIO ( iDirectionB, iDirectionA, iPortVLANB );
+				objResult = switch_ProceedFrameIO ( iDirectionB, iDirectionA, iPortVLANB );
+				iResult = objResult.iResult;
+				
 				if (iResult==iPortVLANA)
 					sResult = "<b>YES</b>";
 				else
@@ -741,7 +746,8 @@ function ids_doMatrix ( )
 		for (iPortA=0;iPortA<iLength;iPortA++)
 		{
 			iPortVLANA = arrayCheckVLAN[iPortA];
-			iResult = switch_ProceedFrameIO ( iDirectionA, iDirectionB, iPortVLANA );
+			objResult = switch_ProceedFrameIO ( iDirectionA, iDirectionB, iPortVLANA );
+			iResult = objResult.iResult;
 			sClassResult = "";
 			
 			switch (iPortVLANA)
@@ -768,13 +774,31 @@ function ids_doMatrix ( )
 					sResult = "Frame is tagged with ID "+iResult;
 					break;
 			}
+			sInternal = "";
 			
-			sLine = "<div class='matrix-input "+sClassAddA+"'>"+sInput+"</div><div class='matrix-connector'></div><div class='matrix-output "+sClassAddB+sClassResult+"'>"+sResult+"</div>";
+			if (objResult.bInputBlocked)
+			{
+				sInternal = "&#x26D4; Input blocked";
+			}
+			else
+			{
+				sInternal = "Frame ID is "+objResult.iInternalVLANID;
+				if (objResult.bOutputBlocked)
+				{
+					sInternal += " &#x2192; Output blocked &#x26D4;";
+				}
+			}
+			
+			sLine = "<div class='matrix-input "+sClassAddA+"'>"+sInput+"</div>";
+			sLine +="<div class='matrix-connector'></div>";
+			sLine +="<div class='matrix-internal'>"+sInternal+"</div>";
+			sLine +="<div class='matrix-connector'></div>";
+			sLine +="<div class='matrix-output "+sClassAddB+sClassResult+"'>"+sResult+"</div>";
 			sTable = sTable.concat ( '<div class="matrix-frame">'+sLine+'</div>\n' );
 		}
 		sTable = "<div class='matrix-frames'>"+sTable+"</div>";
 		
-		sOutput = sOutput + "<div class='matrix-frames-behavior'><div class='matrix-frame-direction'><div class='matrix-tag-direction "+sClassAddA+"'>"+sDirectionA+"</div> <span>&#8594</span> <div class='matrix-tag-direction "+sClassAddB+"'>"+sDirectionB+"</div></div>"+sTable+"</div>";
+		sOutput = sOutput + "<div class='matrix-frames-behavior'><div class='matrix-frame-direction'><div class='matrix-tag-direction "+sClassAddA+"'>"+sDirectionA+"</div> <span>&#8594</span> <div class='matrix-tag-direction matrix-internal-title colorinternal'>Internal</div> <span>&#8594</span> <div class='matrix-tag-direction "+sClassAddB+"'>"+sDirectionB+"</div></div>"+sTable+"</div>";
 	}
 		
 	$("#vlan_matrix").html(sOutput);
@@ -790,7 +814,7 @@ function switchDoSimulation ( )
 	var iVLANInput;
 	var iResult;
 	var sResult;
-	
+	var objResult;
 	
 	//Initialize switch
 	switchFieldsToInitialize ( );
@@ -820,7 +844,8 @@ function switchDoSimulation ( )
 	
 	if ( (iVLANInput>=0) && (iVLANInput<=4094) )
 	{	
-		iResult = switch_ProceedFrameIO ( iPortA, iPortB, iVLANInput );
+		objResult = switch_ProceedFrameIO ( iPortA, iPortB, iVLANInput );
+		iResult = objResult.iResult;
 	
 		switch (iResult)
 		{

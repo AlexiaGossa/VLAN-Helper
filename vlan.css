@@ -295,7 +295,7 @@ input#id_list {
 }
 
 .matrix-tag-direction:last-child {
-	width: 30em;
+	width: 24em;
 	margin-left: 1em;
 }
 
@@ -311,15 +311,22 @@ input#id_list {
 	margin: 0 0 2em 0;
 }
 
+.matrix-internal-title {
+	width: 18em;
+	text-align: center;
+}
+	
 
 .matrix-input,
 .matrix-connector,
-.matrix-output {
+.matrix-output,
+.matrix-internal {
 	display: inline-block;	
 }
 
 .matrix-input,
-.matrix-output {
+.matrix-output,
+.matrix-internal {
 	border: 2px solid #000;
 	border-radius: 0.5em;
 	padding: 0 0.5em;
@@ -333,19 +340,33 @@ input#id_list {
 	background-color: #cec;
 }
 
+.colorinternal {
+	background-color: #ffcb95;
+}
+
 .matrix-input {
-	width: 15em;
+	width: 18em;
 }
 
 .matrix-connector {
-	width: 4em;
+	width: 2em;
 	text-align: center;
 	font-weight: 700;
 	font-size: 200%;
 }
 
+
+
 .matrix-connector:after {
 	content: ' \2192';
+}
+
+
+.matrix-internal {
+	width: 18em;
+    /*left: -2em;
+    position: relative;	*/
+	text-align: center;
 }
 
 
