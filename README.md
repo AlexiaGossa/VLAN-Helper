@@ -39,5 +39,5 @@ Tous les modes des ports du matériel CISCO et les équivalents sont actuellemen
 Pour tester, vous pouvez directement utiliser la webapp ici :
 <a href="https://alexiagossa.github.io/VLAN-Helper/">https://alexiagossa.github.io/VLAN-Helper/</a>
 
-N.B. : En dépit de nombreux tests, des erreurs peuvent encore subsistées !
+N.B. : En dépit de nombreux tests, des erreurs peuvent encore subsister !
 
