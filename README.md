@@ -1,8 +1,3 @@
-<h1>EN - Warning</h1>
-I have just detected a processing problem in the ethernet packets.
-While we find the solution and fix the problem, you must be very careful with the results of the webapp, there may be errors in some cases.
-You are warned, do not trust the webapp blindly.
-
 <h1>EN - VLAN helper ?</h1>
 I'm a system and network administrator for many years. I have been using VLAN for so long that I don't remember.
 Recently, I have to use a switch from a company that uses the CISCO implementation to manage VLANs.
@@ -13,7 +8,7 @@ For now it is based on the implementation of a FS switch (like CISCO). Eventuall
 
 <h1>EN - What's already working?</h1>
 
-All port modes are currently functionnal :
+All CISCO and CISCO-like port modes are currently functionnal :
 - "Access Port"
 - "Trunk Port"
 - "Uplink Port"
@@ -23,11 +18,6 @@ To test, you can directly use the webapp here:
 <a href="https://alexiagossa.github.io/VLAN-Helper/">https://alexiagossa.github.io/VLAN-Helper/</a>
 
 Notice : Despite extensive testing, errors could still remain !
-
-<h1>FR - Attention</h1>
-Je viens de détecter un problème de traitement dans les paquets ethernet.
-Le temps de trouver la solution et de corriger le problème, vous devez faire très attention avec les résultats de la webapp, il peut y avoir des erreurs dans certains cas.
-Vous êtes prévenus, ne faites pas confiance aveuglément à la webapp.
 
 
 <h1>FR - De l'aide pour les VLAN ?</h1>
@@ -40,7 +30,7 @@ Pour le moment il est basé sur l'implémentation d'un switch FS (comme les CISC
 
 <h1>FR - Ce qui fonctionne déjà ?</h1>
 
-Tous les modes des ports sont actuellement fonctionnels :
+Tous les modes des ports du matériel CISCO et les équivalents sont actuellement fonctionnels :
 - "Access Port"
 - "Trunk Port"
 - "Uplink Port"
